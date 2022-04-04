@@ -11,6 +11,6 @@ After adding the file, please select from the menu the option to create your fil
 Give the name of your file then the extension.
 
 
-CREATED BY : rtakak & mikesingleton |
-MODIFY BY : Maxime66410
+CREATED BY : rtakak
+Contributions by : Maxime66410 & mikesingleton
 
