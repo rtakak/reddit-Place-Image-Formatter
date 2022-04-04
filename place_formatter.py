@@ -180,7 +180,7 @@ def place(
         color_n=24,
         DEBUG=False,
 ):
-    bge_colors = [
+    bgr_colors = [
         [26, 0, 109],
         [57, 0, 190],
         [0, 69, 255],
