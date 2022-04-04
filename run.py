@@ -53,11 +53,12 @@ def option2():
      nameFile = input('Please enter the name of your file : ')
      print('')
      extensionFile = input('Please enter the extension of your file : ')
+     print('')
+     width_pixel_size = int(input('Please enter the size of desired width by pixels: '))
      PATH = './' + nameFile + '.' + extensionFile
      if os.path.isfile(PATH) and os.access(PATH, os.R_OK):
         print("We will now update your file")
         image_path = r""+ nameFile + '.' + extensionFile # name of file if it is in same directory or path to file
-        width_pixel_size = 64  # size of width of output by pixels
         show_grids_at_output = True  # option to turn on or off grids at output
         place(image_path, width_pixel_size, show_grids_at_output)  # main function call
      else:
@@ -69,9 +70,9 @@ def option3():
      clear()
      print('')
      time.sleep(1)
-     print('Created by : rtakak & mikesingleton')
+     print('Created by : rtakak')
      print('')
-     print('Modify by : Maxime66410')
+     print('Contributions by : Maxime66410 & mikesingleton')
      time.sleep(3)
      print('')
      print('')

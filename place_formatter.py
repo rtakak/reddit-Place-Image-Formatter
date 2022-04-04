@@ -308,7 +308,7 @@ def place(
     print('')
     time.sleep(5)
 
-
+#ToDO add argparse
 if __name__ == "__main__":
     image_path = r"image.png"  # name of file if it is in same directory or path to file
     width_pixel_size = 64  # size of width of output by pixels
