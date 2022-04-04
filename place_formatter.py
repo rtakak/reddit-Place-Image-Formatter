@@ -56,10 +56,10 @@ def pixelate(img, bit_res, k):
     return kmeans_image(img, k)
 
 
-def dict_palette(rgb_colors, color_names):
+def dict_palette(bgr_colors, color_names):
     palette_colors = {}
-    for color, name in zip(rgb_colors, color_names):
-        palette_colors[name] = color[::]
+    for color, name in zip(bgr_colors, color_names):
+        palette_colors[name] = color
 
     start = 0
     line = 0
@@ -180,7 +180,7 @@ def place(
         color_n=24,
         DEBUG=False,
 ):
-    rgb_colors = [
+    bge_colors = [
         [26, 0, 109],
         [57, 0, 190],
         [0, 69, 255],
@@ -252,7 +252,7 @@ def place(
     pixel = pixelate(original, width_size, color_n)
     output = pixel.copy()
 
-    palette, palette_visual = dict_palette(rgb_colors, color_names)
+    palette, palette_visual = dict_palette(bgr_colors, color_names)
 
     encountered_colors_list = encountered_colors(output)
     if DEBUG:
