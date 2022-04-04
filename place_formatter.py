@@ -4,6 +4,7 @@ from os import makedirs
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
+import time
 
 
 def color_clustering(idx, img, k):
@@ -302,7 +303,10 @@ def place(
     cv2.imwrite(f"./{direct[0]}/pixel_{name[-1]}", output)
 
     print(f"{name[-1]} is ready.\n")
+    print('')
     print("My Job is done, bye!")
+    print('')
+    time.sleep(5)
 
 
 if __name__ == "__main__":
