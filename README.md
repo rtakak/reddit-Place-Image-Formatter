@@ -9,3 +9,8 @@ It is recommended to use a png image
 
 After adding the file, please select from the menu the option to create your file.
 Give the name of your file then the extension.
+
+
+CREATED BY : rtakak & mikesingleton
+MODIFY BY : Maxime66410
+
