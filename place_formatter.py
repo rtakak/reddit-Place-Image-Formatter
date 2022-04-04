@@ -2,6 +2,7 @@ from math import sqrt
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
+import time
 
 
 def color_clustering(idx, img, k):
@@ -290,7 +291,10 @@ def place(
     name = image_path.split("\\")
     name = "pixel_" + name[-1]
     cv2.imwrite(name, output)
+    print('')
     print("My Job is done, bye!")
+    print('')
+    time.sleep(5)
 
 
 if __name__ == "__main__":
