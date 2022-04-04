@@ -1,4 +1,6 @@
 from math import sqrt
+from os import makedirs
+
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
@@ -63,7 +65,9 @@ def dict_palette(bgr_colors, color_names):
 
     start = 0
     line = 0
-    rect = np.zeros((100, 600, 3), dtype=np.uint8)
+    w = len(color_names)
+    count = 0
+    rect = np.zeros((200, w * 50 // 4, 3), dtype=np.uint8)
     for color in palette_colors:
         end = start + 50
         cv2.rectangle(
@@ -73,9 +77,9 @@ def dict_palette(bgr_colors, color_names):
             palette_colors[color],
             -1,
         )
-        if end == 600:
+        if end == w * 50 // 4:
             start = 0
-            line = 50
+            line += 50
         else:
             start = end
 
@@ -211,6 +215,7 @@ def place(
         [0, 0, 0],
         [82, 82, 81],
         [144, 141, 137],
+        [217, 215, 212],
         [255, 255, 255],
     ]
     color_names = [
@@ -287,14 +292,21 @@ def place(
         cv2.imshow("matched palette", output)
         cv2.imshow("original", original)
         cv2.waitKey(0)
-    name = image_path.split("\\")
-    name = "pixel_" + name[-1]
-    cv2.imwrite(name, output)
+    name = image_path.split("/")
+    direct = name[-1].split(".")
+    try:
+        makedirs(f"./{direct[0]}")
+    except:
+        print("Directory already exists.")
+    # replace(image_path, f"./{direct[0]}/{name[-1]}")
+    cv2.imwrite(f"./{direct[0]}/pixel_{name[-1]}", output)
+
+    print(f"{name[-1]} is ready.\n")
     print("My Job is done, bye!")
 
 
 if __name__ == "__main__":
-    image_path = r"user2.png"  # name of file if it is in same directory or path to file
-    width_pixel_size = 48  # size of width of output by pixels
+    image_path = r"image.png"  # name of file if it is in same directory or path to file
+    width_pixel_size = 64  # size of width of output by pixels
     show_grids_at_output = True  # option to turn on or off grids at output
     place(image_path, width_pixel_size, show_grids_at_output)  # main function call
