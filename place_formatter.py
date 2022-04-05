@@ -1,10 +1,10 @@
+import time
 from math import sqrt
 from os import makedirs
 
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
-import time
 
 
 def color_clustering(idx, img, k):
@@ -181,9 +181,8 @@ def place(
         image_path,
         width_size,
         grid=True,
-        show_process_detail=False,
-        color_n=24,
         DEBUG=False,
+        color_n=32,
 ):
     bgr_colors = [
         [26, 0, 109],
@@ -286,14 +285,14 @@ def place(
             end_point = [width * 10, 10 * y]
             output = cv2.line(output, start_point, end_point, color, thickness)
 
-    if show_process_detail:
+    if DEBUG:
         cv2.imshow("Palette", palette_visual)
         cv2.imshow("Color Matches", matches_visual)
         cv2.imshow("pixel", pixel)
         cv2.imshow("matched palette", output)
         cv2.imshow("original", original)
         cv2.waitKey(0)
-    name = image_path.split("/")
+    name = image_path.split("\\")
     direct = name[-1].split(".")
     try:
         makedirs(f"./{direct[0]}")
@@ -303,14 +302,19 @@ def place(
     cv2.imwrite(f"./{direct[0]}/pixel_{name[-1]}", output)
 
     print(f"{name[-1]} is ready.\n")
-    print('')
     print("My Job is done, bye!")
     print('')
     time.sleep(5)
 
-#ToDO add argparse
+
 if __name__ == "__main__":
-    image_path = r"image.png"  # name of file if it is in same directory or path to file
-    width_pixel_size = 64  # size of width of output by pixels
-    show_grids_at_output = True  # option to turn on or off grids at output
-    place(image_path, width_pixel_size, show_grids_at_output)  # main function call
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file_name", help="Enter the name or path of desired imaage")
+    parser.add_argument("width", help="Enter the size of desired width by pixels", type=int)
+    parser.add_argument("--grid_off", default=True, action="store_false",
+                        help="Turns off the option to draw grid on output")
+    parser.add_argument('--debug', action='store_true', help="Turns on the debugging outputs")
+    args = parser.parse_args()
+    place(args.file_name, args.width, args.grid_off, args.debug)
