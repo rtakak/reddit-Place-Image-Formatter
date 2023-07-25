@@ -252,54 +252,104 @@ def place(
         "light gray",
         "white",
     ]
+    if image_path.split(".")[-1] == "gif" or "mp4":
+        import imageio
+        gif = cv2.VideoCapture(image_path)
+        fps = gif.get(cv2.CAP_PROP_FPS)
+        frames = []
+        ret, frame = gif.read()
+        length = int(gif.get(cv2.CAP_PROP_FRAME_COUNT))
+        count = 0
+        while ret:
+            ret, frame = gif.read()
+            if not ret:
+                break
+            pixel = pixelate(frame, width_size, color_n)
+            output = pixel.copy()
 
-    original = cv2.imread(image_path)
-    pixel = pixelate(original, width_size, color_n)
-    output = pixel.copy()
+            width = int(output.shape[1])
+            height = int(output.shape[0])
+            dim = (width * 10, height * 10)
+            pixel = cv2.resize(pixel, dim, interpolation=cv2.INTER_AREA)
+            output = cv2.resize(output, dim, interpolation=cv2.INTER_AREA)
+            if grid:
+                color = (0, 0, 0)
+                thickness = 1
+                for x in range(width):
+                    start_point = [10 * x, 0]
+                    end_point = [10 * x, height * 10]
+                    output = cv2.line(output, start_point, end_point, color, thickness)
+                for y in range(height):
+                    start_point = [0, 10 * y]
+                    end_point = [width * 10, 10 * y]
+                    output = cv2.line(output, start_point, end_point, color, thickness)
 
-    palette, palette_visual = dict_palette(bgr_colors, color_names)
+            if DEBUG:
+                cv2.imshow("pixel", pixel)
+                cv2.imshow("matched palette", output)
+                cv2.imshow("frame", frame)
+                cv2.waitKey(0)
+            output2 = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
+            frames.append(output2)
+            count += 1
+            print(f"Completed: {count}/{length}\n")
 
-    encountered_colors_list = encountered_colors(output)
-    if DEBUG:
-        print(palette)
-        print(encountered_colors_list)
-    recoloring = match_colors_w_palette(encountered_colors_list, palette, DEBUG)
-    output, matches_visual = recolor(
-        output, recoloring, len(encountered_colors_list), DEBUG
-    )
+        name = image_path.split("\\")
+        direct = name[-1].split(".")
+        try:
+            makedirs(f"./{direct[0]}")
+        except:
+            print("Directory already exists.")
+        imageio.mimsave(f"./{direct[0]}/pixel_{name[-1]}", frames, fps=fps)
+    else:
+        original = cv2.imread(image_path)
+        pixel = pixelate(original, width_size, color_n)
+        output = pixel.copy()
 
-    width = int(output.shape[1])
-    height = int(output.shape[0])
-    dim = (width * 10, height * 10)
-    pixel = cv2.resize(pixel, dim, interpolation=cv2.INTER_AREA)
-    output = cv2.resize(output, dim, interpolation=cv2.INTER_AREA)
-    if grid:
-        color = (0, 0, 0)
-        thickness = 1
-        for x in range(width):
-            start_point = [10 * x, 0]
-            end_point = [10 * x, height * 10]
-            output = cv2.line(output, start_point, end_point, color, thickness)
-        for y in range(height):
-            start_point = [0, 10 * y]
-            end_point = [width * 10, 10 * y]
-            output = cv2.line(output, start_point, end_point, color, thickness)
+        palette, palette_visual = dict_palette(bgr_colors, color_names)
 
-    if DEBUG:
-        cv2.imshow("Palette", palette_visual)
-        cv2.imshow("Color Matches", matches_visual)
-        cv2.imshow("pixel", pixel)
-        cv2.imshow("matched palette", output)
-        cv2.imshow("original", original)
-        cv2.waitKey(0)
-    name = image_path.split("\\")
-    direct = name[-1].split(".")
-    try:
-        makedirs(f"./{direct[0]}")
-    except:
-        print("Directory already exists.")
-    # replace(image_path, f"./{direct[0]}/{name[-1]}")
-    cv2.imwrite(f"./{direct[0]}/pixel_{name[-1]}", output)
+        encountered_colors_list = encountered_colors(output)
+        if DEBUG:
+            print(palette)
+            print(encountered_colors_list)
+        recoloring = match_colors_w_palette(encountered_colors_list, palette, DEBUG)
+        output, matches_visual = recolor(
+            output, recoloring, len(encountered_colors_list), DEBUG
+        )
+
+        width = int(output.shape[1])
+        height = int(output.shape[0])
+        dim = (width * 10, height * 10)
+        pixel = cv2.resize(pixel, dim, interpolation=cv2.INTER_AREA)
+        output = cv2.resize(output, dim, interpolation=cv2.INTER_AREA)
+        if grid:
+            color = (0, 0, 0)
+            thickness = 1
+            for x in range(width):
+                start_point = [10 * x, 0]
+                end_point = [10 * x, height * 10]
+                output = cv2.line(output, start_point, end_point, color, thickness)
+            for y in range(height):
+                start_point = [0, 10 * y]
+                end_point = [width * 10, 10 * y]
+                output = cv2.line(output, start_point, end_point, color, thickness)
+
+        if DEBUG:
+            cv2.imshow("Palette", palette_visual)
+            cv2.imshow("Color Matches", matches_visual)
+            cv2.imshow("pixel", pixel)
+            cv2.imshow("matched palette", output)
+            cv2.imshow("original", original)
+            cv2.waitKey(0)
+        name = image_path.split("\\")
+        direct = name[-1].split(".")
+        try:
+            makedirs(f"./{direct[0]}")
+        except:
+            print("Directory already exists.")
+        # replace(image_path, f"./{direct[0]}/{name[-1]}")
+        cv2.imwrite(f"./{direct[0]}/pixel_{name[-1]}", output)
+
 
     print(f"{name[-1]} is ready.\n")
     print("My Job is done, bye!")
