@@ -1,10 +1,10 @@
 import time
-from math import sqrt
 from os import makedirs
 
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
+from colour import delta_E
 
 
 def color_clustering(idx, img, k):
@@ -122,7 +122,7 @@ def match_colors_w_palette(encountered_colors_list, palette, DEBUG, color_space=
                 )
                 l1, a1, b1 = encountered_color_lab[0][0]
                 l2, a2, b2 = palette_color_lab[0][0]
-                diff = sqrt((l2 - l1) ** 2 + (a2 - a1) ** 2 + (b2 - b1) ** 2)
+                diff = delta_E(encountered_color_lab[0][0], palette_color_lab[0][0])
             elif color_space == "HSV":
                 palette_color_lab = cv2.cvtColor(
                     palette_color_bgr.astype(np.float32) / 255, cv2.COLOR_BGR2HSV
@@ -132,7 +132,7 @@ def match_colors_w_palette(encountered_colors_list, palette, DEBUG, color_space=
                 )
                 h1, s1, v1 = encountered_color_lab[0][0]
                 h2, s2, v2 = palette_color_lab[0][0]
-                diff = sqrt((h2 - h1) ** 2 + (s2 - s1) ** 2 + (v2 - v1) ** 2)
+                diff = delta_E(encountered_color_lab[0][0], palette_color_lab[0][0])
             else:
                 raise ValueError
             if DEBUG:
@@ -264,7 +264,8 @@ def place(
             ret, frame = gif.read()
             if not ret:
                 break
-            pixel = pixelate(frame, width_size, color_n)
+            blur = cv2.GaussianBlur(frame,(5,5),0)
+            pixel = pixelate(blur, width_size, color_n)
             output = pixel.copy()
 
             width = int(output.shape[1])
@@ -303,7 +304,8 @@ def place(
         imageio.mimsave(f"./{direct[0]}/pixel_{name[-1]}", frames, fps=fps)
     else:
         original = cv2.imread(image_path)
-        pixel = pixelate(original, width_size, color_n)
+        blur = cv2.GaussianBlur(original,(5,5),0)
+        pixel = pixelate(blur, width_size, color_n)
         output = pixel.copy()
 
         palette, palette_visual = dict_palette(bgr_colors, color_names)

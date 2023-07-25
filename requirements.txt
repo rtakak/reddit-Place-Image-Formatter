@@ -1,3 +1,5 @@
 numpy==1.22.3
 opencv_python==4.5.5.64
 scikit_learn==1.0.2
+imageio==2.31.1
+colour-science==0.4.2
